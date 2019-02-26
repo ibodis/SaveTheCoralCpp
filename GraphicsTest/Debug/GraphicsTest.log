@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\programming\graphicstest\graphicstest\main.cpp(50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\programming\graphicstest\graphicstest\main.cpp(51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GraphicsTest.vcxproj -> C:\Programming\GraphicsTest\Debug\GraphicsTest.exe
