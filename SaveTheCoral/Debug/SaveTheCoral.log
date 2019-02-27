@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\programming\savethecoralcpp\savethecoral\main.cpp(51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SaveTheCoral.vcxproj -> C:\Programming\SaveTheCoralCpp\Debug\SaveTheCoral.exe
