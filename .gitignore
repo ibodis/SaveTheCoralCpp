@@ -73,3 +73,7 @@ SaveTheCoral/Debug/SaveTheCoral.tlog/link.read.1.tlog
 SaveTheCoral/Debug/SaveTheCoral.tlog/link.write.1.tlog
 SaveTheCoral/Debug/vc141.idb
 SaveTheCoral/Debug/vc141.pdb
+*.log
+*.tlog
+*.idb
+*.pdb
