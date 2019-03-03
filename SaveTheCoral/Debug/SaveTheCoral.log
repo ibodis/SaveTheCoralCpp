@@ -1,4 +1,10 @@
 ﻿  main.cpp
-c:\programming\savethecoralcpp\savethecoral\main.cpp(36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\programming\savethecoralcpp\savethecoral\main.cpp(116): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(24): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(25): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(26): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(77): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(78): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(90): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(91): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   SaveTheCoral.vcxproj -> C:\Programming\SaveTheCoralCpp\Debug\SaveTheCoral.exe
+  SaveTheCoral.vcxproj -> C:\Programming\SaveTheCoralCpp\Debug\SaveTheCoral.pdb (Partial PDB)

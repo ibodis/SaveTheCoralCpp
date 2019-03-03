@@ -45,11 +45,15 @@ const int MAX_CarbonDioxideCount = 300;
 sf::CircleShape CarbonDioxideMolecules[MAX_CarbonDioxideCount];
 int currentCarbonDioxideCount = MIN_CarbonDioxideCount;
 sf::Color carbonDioxideColor(107, 142, 35);
-float carbonDioxideSize = 5;
+float carbonDioxideSize = 4;
 
 // Carbonic acid properties
+const int MIN_CarbonicAcidCount = 10;
+const int MAX_CarbonicAcidCount = 300;
 sf::Color carbonicAcidColor(255, 165, 0);
-float carbonicAcidSize = 7;
+sf::CircleShape CarbonicAcidMolecules[MAX_CarbonicAcidCount];
+int currentCarbonicAcidCount = MIN_CarbonicAcidCount;
+float carbonicAcidSize = 6;
 
 // Carbonate properties
 sf::Color carbonateColor(255, 160, 122);
@@ -80,6 +84,19 @@ void InitializeMolecules(Molecule type)
             CarbonDioxideMolecules[i].setOutlineColor(shapeOutlineColor);
         }
         break;
+    case CarbonicAcid:
+        for (int i = 0; i < MAX_CarbonicAcidCount; i++)
+        {
+            float x = std::rand() % (int)waterRect.width;
+            float y = std::rand() % (int)waterRect.height;
+
+            CarbonicAcidMolecules[i].setPosition(x, waterRect.top + y);
+            CarbonicAcidMolecules[i].setFillColor(carbonicAcidColor);
+            CarbonicAcidMolecules[i].setRadius(carbonicAcidSize);
+            CarbonicAcidMolecules[i].setOutlineThickness(shapeOutlineThickness);
+            CarbonicAcidMolecules[i].setOutlineColor(shapeOutlineColor);   
+        }
+        break;
     }
 }
 
@@ -103,6 +120,22 @@ void AnimateMolecules(Molecule type)
             CarbonDioxideMolecules[i].setPosition(currentPosition);
         }
         break;
+    case CarbonicAcid:
+        for (int i = 0; i < currentCarbonicAcidCount; i++)
+        {
+            sf::Vector2f currentPosition = CarbonicAcidMolecules[i].getPosition();
+
+            currentPosition.x += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+            currentPosition.y += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+
+            currentPosition.x = std::min(currentPosition.x, waterRect.left + waterRect.width);
+            currentPosition.y = std::min(currentPosition.y, waterRect.top + waterRect.height);
+            currentPosition.x = std::max(currentPosition.x, waterRect.left);
+            currentPosition.y = std::max(currentPosition.y, waterRect.top);
+
+            CarbonicAcidMolecules[i].setPosition(currentPosition);
+        }
+        break;
     }
 }
 
@@ -113,6 +146,9 @@ void IncreaseMoleculeCount(Molecule type, int amount)
     case CarbonDioxide:
         currentCarbonDioxideCount = std::min(currentCarbonDioxideCount + amount, MAX_CarbonDioxideCount);
         break;
+    case CarbonicAcid:
+        currentCarbonicAcidCount = std::min(currentCarbonicAcidCount + amount, MAX_CarbonicAcidCount);
+        break;
     }
 }
 
@@ -122,6 +158,9 @@ void DecreaseMoleculeCount(Molecule type, int amount)
     {
     case CarbonDioxide:
         currentCarbonDioxideCount = std::max(currentCarbonDioxideCount - amount, MIN_CarbonDioxideCount);
+        break;
+    case CarbonicAcid:
+        currentCarbonicAcidCount = std::max(currentCarbonicAcidCount - amount, MIN_CarbonicAcidCount);
         break;
     }
 }
@@ -149,6 +188,7 @@ int main()
     text.setFillColor(textColor);
      
     InitializeMolecules(CarbonDioxide);
+    InitializeMolecules(CarbonicAcid);
 
     while (window.isOpen())
     {
@@ -170,18 +210,24 @@ int main()
                 case sf::Keyboard::A:
                     IncreaseMoleculeCount(CarbonDioxide, 10);
                     break;
-                case sf::Keyboard::B:
+                case sf::Keyboard::S:
                     DecreaseMoleculeCount(CarbonDioxide, 10);
                     break;
-                case sf::Keyboard::Space:
-                    text.setPosition(std::rand() % windowWidth, std::rand() % windowHeight);
+                
+                case sf::Keyboard::Q:
+                    IncreaseMoleculeCount(CarbonicAcid, 10);
                     break;
+                case sf::Keyboard::W:
+                    DecreaseMoleculeCount(CarbonicAcid, 10);
+                    break;
+               
                 }
             }
         }
 
         // Animate molecules
         AnimateMolecules(CarbonDioxide);
+        AnimateMolecules(CarbonicAcid);
 
         // Clear the window
         window.clear(sf::Color::White);
@@ -193,6 +239,10 @@ int main()
         for (int i = 0; i < currentCarbonDioxideCount; i++)
         {
             window.draw(CarbonDioxideMolecules[i]);
+        }
+        for (int i = 0; i < currentCarbonicAcidCount; i++)
+        {
+            window.draw(CarbonicAcidMolecules[i]);
         }
 
         // Draw the text
