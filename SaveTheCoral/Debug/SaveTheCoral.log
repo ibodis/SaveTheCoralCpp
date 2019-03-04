@@ -2,9 +2,15 @@
 c:\programming\savethecoralcpp\savethecoral\main.cpp(24): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
 c:\programming\savethecoralcpp\savethecoral\main.cpp(25): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
 c:\programming\savethecoralcpp\savethecoral\main.cpp(26): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
-c:\programming\savethecoralcpp\savethecoral\main.cpp(77): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\programming\savethecoralcpp\savethecoral\main.cpp(78): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(89): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\programming\savethecoralcpp\savethecoral\main.cpp(90): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\programming\savethecoralcpp\savethecoral\main.cpp(91): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(102): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(103): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(115): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(116): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(128): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(129): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(141): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\programming\savethecoralcpp\savethecoral\main.cpp(142): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   SaveTheCoral.vcxproj -> C:\Programming\SaveTheCoralCpp\Debug\SaveTheCoral.exe
   SaveTheCoral.vcxproj -> C:\Programming\SaveTheCoralCpp\Debug\SaveTheCoral.pdb (Partial PDB)

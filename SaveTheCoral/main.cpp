@@ -53,19 +53,31 @@ const int MAX_CarbonicAcidCount = 300;
 sf::Color carbonicAcidColor(255, 165, 0);
 sf::CircleShape CarbonicAcidMolecules[MAX_CarbonicAcidCount];
 int currentCarbonicAcidCount = MIN_CarbonicAcidCount;
-float carbonicAcidSize = 6;
+float carbonicAcidSize = 6.5;
 
 // Carbonate properties
 sf::Color carbonateColor(255, 160, 122);
-float carbonateSize = 2;
+float carbonateSize = 6;
+const int MIN_CarbonateCount = 10;
+const int MAX_CarbonateCount = 250;
+sf::CircleShape CarbonateMolecules[MAX_CarbonateCount];
+int currentCarbonateCount = MIN_CarbonateCount;
 
 // Bi-carbonate properties
-sf::Color biCorbonateColor(25, 25, 112);
-float biCarbonateSize = 4;
+sf::Color biCarbonateColor(25, 25, 112);
+float biCarbonateSize = 6;
+const int MIN_biCarbonateCount = 10;
+const int MAX_biCarbonateCount = 250;
+sf::CircleShape biCarbonateMolecules[MAX_biCarbonateCount];
+int currentBiCarbonateCount = MIN_biCarbonateCount;
 
 // Calcium carbonate properties
 sf::Color calciumCarbonateColor(255, 248, 220);
-float calciumCarbonateSize = 6;
+float calciumCarbonateSize = 10;
+const int MIN_CalciumCarbonateCount = 10;
+const int MAX_CalciumCarbonateCount = 250;
+sf::CircleShape CalciumCarbonateMolecules[MAX_CalciumCarbonateCount];
+int currentCalciumCarbonateCount = MIN_CalciumCarbonateCount;
 
 void InitializeMolecules(Molecule type)
 {
@@ -95,6 +107,45 @@ void InitializeMolecules(Molecule type)
             CarbonicAcidMolecules[i].setRadius(carbonicAcidSize);
             CarbonicAcidMolecules[i].setOutlineThickness(shapeOutlineThickness);
             CarbonicAcidMolecules[i].setOutlineColor(shapeOutlineColor);   
+        }
+        break;
+    case Carbonate:
+        for (int i = 0; i < MAX_CarbonateCount; i++)
+        {
+            float x = std::rand() % (int)waterRect.width;
+            float y = std::rand() % (int)waterRect.height;
+
+            CarbonateMolecules[i].setPosition(x, waterRect.top + y);
+            CarbonateMolecules[i].setFillColor(carbonateColor);
+            CarbonateMolecules[i].setRadius(carbonateSize);
+            CarbonateMolecules[i].setOutlineThickness(shapeOutlineThickness);
+            CarbonateMolecules[i].setOutlineColor(shapeOutlineColor);
+        }
+        break;
+    case BiCarbonate:
+        for (int i = 0; i < MAX_biCarbonateCount; i++)
+        {
+            float x = std::rand() % (int)waterRect.width;
+            float y = std::rand() % (int)waterRect.height;
+
+            biCarbonateMolecules[i].setPosition(x, waterRect.top + y);
+            biCarbonateMolecules[i].setFillColor(biCarbonateColor);
+            biCarbonateMolecules[i].setRadius(biCarbonateSize);
+            biCarbonateMolecules[i].setOutlineThickness(shapeOutlineThickness);
+            biCarbonateMolecules[i].setOutlineColor(shapeOutlineColor);
+        }   
+        break;
+    case CalciumCarbonate:
+        for (int i = 0; i < MAX_CalciumCarbonateCount; i++)
+        {
+            float x = std::rand() % (int)waterRect.width;
+            float y = std::rand() % (int)waterRect.height;
+
+            CalciumCarbonateMolecules[i].setPosition(x, waterRect.top + y);
+            CalciumCarbonateMolecules[i].setFillColor(calciumCarbonateColor);
+            CalciumCarbonateMolecules[i].setRadius(calciumCarbonateSize);
+            CalciumCarbonateMolecules[i].setOutlineThickness(shapeOutlineThickness);
+            CalciumCarbonateMolecules[i].setOutlineColor(shapeOutlineColor);
         }
         break;
     }
@@ -136,6 +187,54 @@ void AnimateMolecules(Molecule type)
             CarbonicAcidMolecules[i].setPosition(currentPosition);
         }
         break;
+    case Carbonate:
+        for (int i = 0; i < currentCarbonateCount; i++)
+        {
+            sf::Vector2f currentPosition = CarbonateMolecules[i].getPosition();
+
+            currentPosition.x += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+            currentPosition.y += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+
+            currentPosition.x = std::min(currentPosition.x, waterRect.left + waterRect.width);
+            currentPosition.y = std::min(currentPosition.y, waterRect.top + waterRect.height);
+            currentPosition.x = std::max(currentPosition.x, waterRect.left);
+            currentPosition.y = std::max(currentPosition.y, waterRect.top);
+
+            CarbonateMolecules[i].setPosition(currentPosition);
+        }
+        break;
+    case BiCarbonate:
+        for (int i = 0; i < currentBiCarbonateCount; i++)
+        {
+            sf::Vector2f currentPosition = biCarbonateMolecules[i].getPosition();
+
+            currentPosition.x += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+            currentPosition.y += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+
+            currentPosition.x = std::min(currentPosition.x, waterRect.left + waterRect.width);
+            currentPosition.y = std::min(currentPosition.y, waterRect.top + waterRect.height);
+            currentPosition.x = std::max(currentPosition.x, waterRect.left);
+            currentPosition.y = std::max(currentPosition.y, waterRect.top);
+
+            biCarbonateMolecules[i].setPosition(currentPosition);
+        }
+        break;
+    case CalciumCarbonate:
+        for (int i = 0; i < currentCalciumCarbonateCount; i++)
+        {
+            sf::Vector2f currentPosition = CalciumCarbonateMolecules[i].getPosition();
+
+            currentPosition.x += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+            currentPosition.y += (std::rand() % 2 == 0 ? -1 : 1) * (std::rand() % movementAmount);
+
+            currentPosition.x = std::min(currentPosition.x, waterRect.left + waterRect.width);
+            currentPosition.y = std::min(currentPosition.y, waterRect.top + waterRect.height);
+            currentPosition.x = std::max(currentPosition.x, waterRect.left);
+            currentPosition.y = std::max(currentPosition.y, waterRect.top);
+
+           CalciumCarbonateMolecules[i].setPosition(currentPosition);
+        }
+        break;
     }
 }
 
@@ -149,6 +248,15 @@ void IncreaseMoleculeCount(Molecule type, int amount)
     case CarbonicAcid:
         currentCarbonicAcidCount = std::min(currentCarbonicAcidCount + amount, MAX_CarbonicAcidCount);
         break;
+    case Carbonate:
+        currentCarbonateCount = std::min(currentCarbonateCount + amount, MAX_CarbonateCount);
+        break;
+    case BiCarbonate:
+        currentBiCarbonateCount = std::min(currentBiCarbonateCount + amount, MAX_biCarbonateCount);
+        break;
+    case CalciumCarbonate:
+        currentCalciumCarbonateCount = std::min(currentCalciumCarbonateCount + amount, MAX_CalciumCarbonateCount);
+        break;
     }
 }
 
@@ -161,6 +269,15 @@ void DecreaseMoleculeCount(Molecule type, int amount)
         break;
     case CarbonicAcid:
         currentCarbonicAcidCount = std::max(currentCarbonicAcidCount - amount, MIN_CarbonicAcidCount);
+        break;
+    case Carbonate:
+        currentCarbonateCount = std::max(currentCarbonateCount - amount, MIN_CarbonateCount);
+        break;
+    case BiCarbonate:
+        currentBiCarbonateCount = std::max(currentBiCarbonateCount - amount, MIN_biCarbonateCount);
+        break;
+    case CalciumCarbonate:
+        currentCalciumCarbonateCount = std::max(currentCalciumCarbonateCount - amount, MIN_CalciumCarbonateCount);
         break;
     }
 }
@@ -189,6 +306,9 @@ int main()
      
     InitializeMolecules(CarbonDioxide);
     InitializeMolecules(CarbonicAcid);
+    InitializeMolecules(Carbonate);
+    InitializeMolecules(BiCarbonate);
+    InitializeMolecules(CalciumCarbonate);
 
     while (window.isOpen())
     {
@@ -220,7 +340,24 @@ int main()
                 case sf::Keyboard::W:
                     DecreaseMoleculeCount(CarbonicAcid, 10);
                     break;
-               
+                case sf::Keyboard::Z:
+                    IncreaseMoleculeCount(Carbonate, 10);
+                    break;                      
+                case sf::Keyboard::X:           
+                    DecreaseMoleculeCount(Carbonate, 10);
+                    break;
+                case sf::Keyboard::D:
+                    IncreaseMoleculeCount(BiCarbonate, 10);
+                    break;
+                case sf::Keyboard::F:
+                    DecreaseMoleculeCount(BiCarbonate, 10);
+                    break;
+                case sf::Keyboard::E:
+                    IncreaseMoleculeCount(CalciumCarbonate, 10);
+                    break;
+                case sf::Keyboard::R:
+                    DecreaseMoleculeCount(CalciumCarbonate, 10);
+                    break;
                 }
             }
         }
@@ -228,6 +365,9 @@ int main()
         // Animate molecules
         AnimateMolecules(CarbonDioxide);
         AnimateMolecules(CarbonicAcid);
+        AnimateMolecules(Carbonate);
+        AnimateMolecules(BiCarbonate);
+        AnimateMolecules(CalciumCarbonate);
 
         // Clear the window
         window.clear(sf::Color::White);
@@ -243,6 +383,18 @@ int main()
         for (int i = 0; i < currentCarbonicAcidCount; i++)
         {
             window.draw(CarbonicAcidMolecules[i]);
+        }
+        for (int i = 0; i < currentCarbonateCount; i++)
+        {
+            window.draw(CarbonateMolecules[i]);
+        }
+        for (int i = 0; i < currentBiCarbonateCount; i++)
+        {
+            window.draw(biCarbonateMolecules[i]);
+        }
+        for (int i = 0; i < currentCalciumCarbonateCount; i++)
+        {
+            window.draw(CalciumCarbonateMolecules[i]);
         }
 
         // Draw the text
