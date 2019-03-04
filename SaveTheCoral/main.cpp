@@ -25,6 +25,9 @@ sf::Rect<float> menuRect(0, 0, windowWidth, menuHeight);
 sf::Rect<float> waterRect(0, menuRect.height, windowWidth, windowHeight - menuRect.height);
 sf::Rect<float> coralRect(0, windowHeight - coralHeight, windowWidth, coralHeight);
 
+// Window
+sf::RenderWindow window;
+
 // Background shapes
 sf::RectangleShape menu;
 sf::RectangleShape water;
@@ -33,7 +36,6 @@ sf::RectangleShape coral;
 // Universal shape properties
 float shapeOutlineThickness = 1;
 sf::Color shapeOutlineColor(100, 100, 200);
-sf::Color textColor(sf::Color::Black);
 
 // Water properties
 sf::Color waterColor(32, 178, 170);
@@ -82,6 +84,63 @@ sf::CircleShape calciumCarbonateMolecules[MAX_CalciumCarbonateCount];
 int currentCalciumCarbonateCount = MIN_CalciumCarbonateCount;
 int calciumCarbonateSpeed = 2;
 float calciumCarbonateSize = 10;
+
+// Menu text
+sf::Font font;
+sf::Color textColor(sf::Color::Black);
+sf::Text textMenuTitle;
+sf::Text textMenuCarbonDioxide;
+sf::Text textMenuCarbonate;
+
+void InitializeMenu()
+{
+    int xPos = 10;
+    int yPos = 10;
+    int fontSize;
+
+    fontSize = 40;
+    textMenuTitle.setFont(font);
+    textMenuTitle.setString("Welcome to Save the Coral Simulation");
+    textMenuTitle.setCharacterSize(fontSize);
+    textMenuTitle.setFillColor(textColor);
+    textMenuTitle.setPosition(xPos, yPos);
+    yPos += fontSize + 10;
+
+    fontSize = 20;
+    textMenuCarbonDioxide.setFont(font);
+    textMenuCarbonDioxide.setCharacterSize(fontSize);
+    textMenuCarbonDioxide.setFillColor(textColor);
+    textMenuCarbonDioxide.setPosition(xPos, yPos);
+    yPos += fontSize + 10;
+
+    fontSize = 20;
+    textMenuCarbonate.setFont(font);
+    textMenuCarbonate.setCharacterSize(fontSize);
+    textMenuCarbonate.setFillColor(textColor);
+    textMenuCarbonate.setPosition(xPos, yPos);
+    yPos += fontSize + 10;
+}
+
+void UpdateText()
+{
+    wchar_t buffer[1000];
+
+    wsprintfW(buffer, L"Carbon Dioxide control: [a] increase, [s] decrease  [Min: %d, Current: %d, Max: %d]", 
+        MIN_CarbonDioxideCount, currentCarbonDioxideCount, MAX_CarbonDioxideCount);
+    textMenuCarbonDioxide.setString(buffer);
+
+    wsprintfW(buffer, L"Carbonate control: [z] increase, [x] decrease  [Min: %d, Current: %d, Max: %d]",
+        MIN_CarbonateCount, currentCarbonateCount, MAX_CarbonateCount);
+    textMenuCarbonate.setString(buffer);
+}
+
+void InitializeWater()
+{
+    water.setPosition(waterRect.left, waterRect.top);
+    water.setSize(sf::Vector2f(waterRect.width, waterRect.height));
+    water.setOutlineColor(waterColor);
+    water.setFillColor(waterColor);
+}
 
 void InitializeMolecules(Molecule type)
 {
@@ -286,27 +345,21 @@ void DecreaseMoleculeCount(Molecule type, int amount)
     }
 }
 
-int main()
+void Initialize()
 {
     std::srand(GetTickCount());
 
-    // Create a graphical text to display
-    sf::Font font;
-    if (!font.loadFromFile("resources/sansation.ttf"))
-        return EXIT_FAILURE;
-
     // Create the window of the application
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight, 32), "Sample graphics", sf::Style::Titlebar | sf::Style::Close);
+    window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Sample graphics", sf::Style::Titlebar | sf::Style::Close);
     window.setVerticalSyncEnabled(true);
 
-    // Create water rectangle shape
-    water.setPosition(waterRect.left, waterRect.top);
-    water.setSize(sf::Vector2f(waterRect.width, waterRect.height));
-    water.setOutlineColor(waterColor);
-    water.setFillColor(waterColor);
+    font.loadFromFile("resources/sansation.ttf");
 
-    sf::Text text("Save the Coral!!", font, 50);
-    text.setFillColor(textColor);
+    // Create water rectangle shape
+    InitializeWater();
+
+    // Create text objects
+    InitializeMenu();
 
     // Initialize molecules
     InitializeMolecules(CarbonDioxide);
@@ -314,102 +367,127 @@ int main()
     InitializeMolecules(Carbonate);
     InitializeMolecules(BiCarbonate);
     InitializeMolecules(CalciumCarbonate);
+}
+
+void RenderWindow()
+{
+    // Clear the window
+    window.clear(sf::Color::White);
+
+    // Draw the water
+    window.draw(water);
+
+    // Draw the molecules
+    for (int i = 0; i < currentCarbonDioxideCount; i++)
+    {
+        window.draw(carbonDioxideMolecules[i]);
+    }
+    for (int i = 0; i < currentCarbonicAcidCount; i++)
+    {
+        window.draw(carbonicAcidMolecules[i]);
+    }
+    for (int i = 0; i < currentCarbonateCount; i++)
+    {
+        window.draw(carbonateMolecules[i]);
+    }
+    for (int i = 0; i < currentBiCarbonateCount; i++)
+    {
+        window.draw(biCarbonateMolecules[i]);
+    }
+    for (int i = 0; i < currentCalciumCarbonateCount; i++)
+    {
+        window.draw(calciumCarbonateMolecules[i]);
+    }
+
+    // Draw the text
+    window.draw(textMenuTitle);
+    window.draw(textMenuCarbonDioxide);
+    window.draw(textMenuCarbonate);
+
+    // Display things on screen
+    window.display();
+}
+
+void HandleEvents()
+{
+    // Handle events
+    sf::Event event;
+    while (window.pollEvent(event))
+    {
+        // Window closed or escape key pressed: exit
+        if ((event.type == sf::Event::Closed) || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
+        {
+            window.close();
+            break;
+        }
+
+        if ((event.type == sf::Event::KeyPressed))
+        {
+            switch (event.key.code)
+            {
+            case sf::Keyboard::A:
+                IncreaseMoleculeCount(CarbonDioxide, 10);
+                break;
+            case sf::Keyboard::S:
+                DecreaseMoleculeCount(CarbonDioxide, 10);
+                break;
+
+            case sf::Keyboard::Q:
+                IncreaseMoleculeCount(CarbonicAcid, 10);
+                break;
+            case sf::Keyboard::W:
+                DecreaseMoleculeCount(CarbonicAcid, 10);
+                break;
+
+            case sf::Keyboard::Z:
+                IncreaseMoleculeCount(Carbonate, 10);
+                break;
+            case sf::Keyboard::X:
+                DecreaseMoleculeCount(Carbonate, 10);
+                break;
+
+            case sf::Keyboard::D:
+                IncreaseMoleculeCount(BiCarbonate, 10);
+                break;
+            case sf::Keyboard::F:
+                DecreaseMoleculeCount(BiCarbonate, 10);
+                break;
+
+            case sf::Keyboard::E:
+                IncreaseMoleculeCount(CalciumCarbonate, 10);
+                break;
+            case sf::Keyboard::R:
+                DecreaseMoleculeCount(CalciumCarbonate, 10);
+                break;
+            }
+        }
+    }
+}
+
+void UpdateSimulation()
+{
+    // Animate molecules
+    AnimateMolecules(CarbonDioxide);
+    AnimateMolecules(CarbonicAcid);
+    AnimateMolecules(Carbonate);
+    AnimateMolecules(BiCarbonate);
+    AnimateMolecules(CalciumCarbonate);
+
+    // Update text strings
+    UpdateText();
+}
+
+int main()
+{
+    Initialize();
 
     while (window.isOpen())
     {
-        // Handle events
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Window closed or escape key pressed: exit
-            if ((event.type == sf::Event::Closed) || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
-            {
-                window.close();
-                break;
-            }
-           
-            if ((event.type == sf::Event::KeyPressed))
-            {
-                switch (event.key.code)
-                {
-                case sf::Keyboard::A:
-                    IncreaseMoleculeCount(CarbonDioxide, 10);
-                    break;
-                case sf::Keyboard::S:
-                    DecreaseMoleculeCount(CarbonDioxide, 10);
-                    break;
-                
-                case sf::Keyboard::Q:
-                    IncreaseMoleculeCount(CarbonicAcid, 10);
-                    break;
-                case sf::Keyboard::W:
-                    DecreaseMoleculeCount(CarbonicAcid, 10);
-                    break;
+        HandleEvents();
 
-                case sf::Keyboard::Z:
-                    IncreaseMoleculeCount(Carbonate, 10);
-                    break;
-                case sf::Keyboard::X:
-                    DecreaseMoleculeCount(Carbonate, 10);
-                    break;
+        UpdateSimulation();
 
-                case sf::Keyboard::D:
-                    IncreaseMoleculeCount(BiCarbonate, 10);
-                    break;
-                case sf::Keyboard::F:
-                    DecreaseMoleculeCount(BiCarbonate, 10);
-                    break;
-
-                case sf::Keyboard::E:
-                    IncreaseMoleculeCount(CalciumCarbonate, 10);
-                    break;
-                case sf::Keyboard::R:
-                    DecreaseMoleculeCount(CalciumCarbonate, 10);
-                    break;
-                }
-            }
-        }
-
-        // Animate molecules
-        AnimateMolecules(CarbonDioxide);
-        AnimateMolecules(CarbonicAcid);
-        AnimateMolecules(Carbonate);
-        AnimateMolecules(BiCarbonate);
-        AnimateMolecules(CalciumCarbonate);
-
-        // Clear the window
-        window.clear(sf::Color::White);
-
-        // Draw the water
-        window.draw(water);
-
-        // Draw the molecules
-        for (int i = 0; i < currentCarbonDioxideCount; i++)
-        {
-            window.draw(carbonDioxideMolecules[i]);
-        }
-        for (int i = 0; i < currentCarbonicAcidCount; i++)
-        {
-            window.draw(carbonicAcidMolecules[i]);
-        }
-        for (int i = 0; i < currentCarbonateCount; i++)
-        {
-            window.draw(carbonateMolecules[i]);
-        }
-        for (int i = 0; i < currentBiCarbonateCount; i++)
-        {
-            window.draw(biCarbonateMolecules[i]);
-        }
-        for (int i = 0; i < currentCalciumCarbonateCount; i++)
-        {
-            window.draw(calciumCarbonateMolecules[i]);
-        }
-
-        // Draw the text
-        window.draw(text);
-
-        // Display things on screen
-        window.display();
+        RenderWindow();
     }
 
     return EXIT_SUCCESS;
