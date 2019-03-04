@@ -31,10 +31,10 @@
 *.app
 
 .vs/
-[Oo]bj
-[Bb]in
-[Dd]ebug
-[Bb]uild/
+SaveTheCoral/Debug/
+Debug/SaveTheCoral.ilk
+Debug/SaveTheCoral.pdb
+
 *.user
 *.suo
 *.exe
@@ -62,18 +62,6 @@ ipch/
 *.vssscc
 *.bak.*
 *.bak
-.vs/SaveTheCoral/v15/.suo
-.vs/SaveTheCoral/v15/Browse.VC.db
-.vs/SaveTheCoral/v15/Browse.VC.opendb
-Debug/SaveTheCoral.ilk
-Debug/SaveTheCoral.pdb
-SaveTheCoral/Debug/SaveTheCoral.log
-SaveTheCoral/Debug/SaveTheCoral.tlog/CL.command.1.tlog
-SaveTheCoral/Debug/SaveTheCoral.tlog/CL.read.1.tlog
-SaveTheCoral/Debug/SaveTheCoral.tlog/link.read.1.tlog
-SaveTheCoral/Debug/SaveTheCoral.tlog/link.write.1.tlog
-SaveTheCoral/Debug/vc141.idb
-SaveTheCoral/Debug/vc141.pdb
 *.log
 *.tlog
 *.idb
