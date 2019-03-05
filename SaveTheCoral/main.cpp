@@ -41,47 +41,47 @@ sf::Color shapeOutlineColor(100, 100, 200);
 sf::Color waterColor(32, 178, 170);
 
 // Carbon dioxide properties
-const int MIN_CarbonDioxideCount = 10;
-const int MAX_CarbonDioxideCount = 300;
-sf::Color carbonDioxideColor(107, 142, 35);
+const int MIN_CarbonDioxideCount = 100;
+const int MAX_CarbonDioxideCount = 200;
+sf::Color carbonDioxideColor(sf::Color::Red);
 sf::CircleShape carbonDioxideMolecules[MAX_CarbonDioxideCount];
-int currentCarbonDioxideCount = MIN_CarbonDioxideCount;
+int currentCarbonDioxideCount = 124;
 int carbonDioxideSpeed = 6;
 float carbonDioxideSize = 4;
 
 // Carbonic acid properties
-const int MIN_CarbonicAcidCount = 10;
-const int MAX_CarbonicAcidCount = 300;
+const int MIN_CarbonicAcidCount = MIN_CarbonDioxideCount;
+const int MAX_CarbonicAcidCount = MAX_CarbonDioxideCount;
 sf::Color carbonicAcidColor(255, 165, 0);
 sf::CircleShape carbonicAcidMolecules[MAX_CarbonicAcidCount];
-int currentCarbonicAcidCount = MIN_CarbonicAcidCount;
+int currentCarbonicAcidCount = currentCarbonDioxideCount;
 int carbonicAcidSpeed = 4;
 float carbonicAcidSize = 6.5;
 
 // Carbonate properties
-const int MIN_CarbonateCount = 10;
-const int MAX_CarbonateCount = 250;
+const int MIN_CarbonateCount = MIN_CarbonDioxideCount;
+const int MAX_CarbonateCount = MAX_CarbonDioxideCount;
 sf::Color carbonateColor(255, 160, 122);
 sf::CircleShape carbonateMolecules[MAX_CarbonateCount];
-int currentCarbonateCount = MIN_CarbonateCount;
+int currentCarbonateCount = 300 - currentCarbonicAcidCount;
 int carbonateSpeed = 4;
 float carbonateSize = 6;
 
 // Bi-carbonate properties
-const int MIN_biCarbonateCount = 10;
-const int MAX_biCarbonateCount = 250;
+const int MIN_biCarbonateCount = MIN_CarbonDioxideCount;
+const int MAX_biCarbonateCount = MAX_CarbonDioxideCount;
 sf::Color biCarbonateColor(25, 25, 112);
 sf::CircleShape biCarbonateMolecules[MAX_biCarbonateCount];
-int currentBiCarbonateCount = MIN_biCarbonateCount;
+int currentBiCarbonateCount = currentCarbonDioxideCount;
 int biCarbonateSpeed = 4;
 float biCarbonateSize = 6;
 
 // Calcium carbonate properties
-const int MIN_CalciumCarbonateCount = 10;
-const int MAX_CalciumCarbonateCount = 250;
+const int MIN_CalciumCarbonateCount = MIN_CarbonDioxideCount;
+const int MAX_CalciumCarbonateCount = MAX_CarbonDioxideCount;
 sf::Color calciumCarbonateColor(255, 248, 220);
 sf::CircleShape calciumCarbonateMolecules[MAX_CalciumCarbonateCount];
-int currentCalciumCarbonateCount = MIN_CalciumCarbonateCount;
+int currentCalciumCarbonateCount = currentCarbonateCount;
 int calciumCarbonateSpeed = 2;
 float calciumCarbonateSize = 10;
 
@@ -301,48 +301,22 @@ void AnimateMolecules(Molecule type)
     }
 }
 
-void IncreaseMoleculeCount(Molecule type, int amount)
+void IncreaseCarbonDioxide(int amount)
 {
-    switch (type)
-    {
-    case CarbonDioxide:
-        currentCarbonDioxideCount = std::min(currentCarbonDioxideCount + amount, MAX_CarbonDioxideCount);
-        break;
-    case CarbonicAcid:
-        currentCarbonicAcidCount = std::min(currentCarbonicAcidCount + amount, MAX_CarbonicAcidCount);
-        break;
-    case Carbonate:
-        currentCarbonateCount = std::min(currentCarbonateCount + amount, MAX_CarbonateCount);
-        break;
-    case BiCarbonate:
-        currentBiCarbonateCount = std::min(currentBiCarbonateCount + amount, MAX_biCarbonateCount);
-        break;
-    case CalciumCarbonate:
-        currentCalciumCarbonateCount = std::min(currentCalciumCarbonateCount + amount, MAX_CalciumCarbonateCount);
-        break;
-    }
+    currentCarbonDioxideCount = std::min(currentCarbonDioxideCount + amount, MAX_CarbonDioxideCount);
+    currentCarbonicAcidCount = currentCarbonDioxideCount;
+    currentBiCarbonateCount = currentCarbonDioxideCount;
+    currentCarbonateCount = 300 - currentCarbonicAcidCount;
+    currentCalciumCarbonateCount = currentCarbonateCount;
 }
 
-void DecreaseMoleculeCount(Molecule type, int amount)
+void DecreaseCarbonDioxide(int amount)
 {
-    switch (type)
-    {
-    case CarbonDioxide:
-        currentCarbonDioxideCount = std::max(currentCarbonDioxideCount - amount, MIN_CarbonDioxideCount);
-        break;
-    case CarbonicAcid:
-        currentCarbonicAcidCount = std::max(currentCarbonicAcidCount - amount, MIN_CarbonicAcidCount);
-        break;
-    case Carbonate:
-        currentCarbonateCount = std::max(currentCarbonateCount - amount, MIN_CarbonateCount);
-        break;
-    case BiCarbonate:
-        currentBiCarbonateCount = std::max(currentBiCarbonateCount - amount, MIN_biCarbonateCount);
-        break;
-    case CalciumCarbonate:
-        currentCalciumCarbonateCount = std::max(currentCalciumCarbonateCount - amount, MIN_CalciumCarbonateCount);
-        break;
-    }
+    currentCarbonDioxideCount = std::max(currentCarbonDioxideCount - amount, MIN_CarbonDioxideCount);
+    currentCarbonicAcidCount = currentCarbonDioxideCount;
+    currentBiCarbonateCount = currentCarbonDioxideCount;
+    currentCarbonateCount = 300 - currentCarbonicAcidCount;
+    currentCalciumCarbonateCount = currentCarbonateCount;
 }
 
 void Initialize()
@@ -426,38 +400,10 @@ void HandleEvents()
             switch (event.key.code)
             {
             case sf::Keyboard::A:
-                IncreaseMoleculeCount(CarbonDioxide, 10);
+                IncreaseCarbonDioxide(1);
                 break;
             case sf::Keyboard::S:
-                DecreaseMoleculeCount(CarbonDioxide, 10);
-                break;
-
-            case sf::Keyboard::Q:
-                IncreaseMoleculeCount(CarbonicAcid, 10);
-                break;
-            case sf::Keyboard::W:
-                DecreaseMoleculeCount(CarbonicAcid, 10);
-                break;
-
-            case sf::Keyboard::Z:
-                IncreaseMoleculeCount(Carbonate, 10);
-                break;
-            case sf::Keyboard::X:
-                DecreaseMoleculeCount(Carbonate, 10);
-                break;
-
-            case sf::Keyboard::D:
-                IncreaseMoleculeCount(BiCarbonate, 10);
-                break;
-            case sf::Keyboard::F:
-                DecreaseMoleculeCount(BiCarbonate, 10);
-                break;
-
-            case sf::Keyboard::E:
-                IncreaseMoleculeCount(CalciumCarbonate, 10);
-                break;
-            case sf::Keyboard::R:
-                DecreaseMoleculeCount(CalciumCarbonate, 10);
+                DecreaseCarbonDioxide(1);
                 break;
             }
         }

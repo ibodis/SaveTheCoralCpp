@@ -66,3 +66,5 @@ ipch/
 *.tlog
 *.idb
 *.pdb
+.vs/SaveTheCoral/v15/.suo
+.vs/SaveTheCoral/v15/Browse.VC.db
