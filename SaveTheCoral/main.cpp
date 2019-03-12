@@ -47,7 +47,6 @@ sf::RectangleShape coral;
 float shapeOutlineThickness = 1;
 sf::Color shapeOutlineColor(100, 100, 200);
 
-int carbonateSpeed = 4;
 typedef struct MoleculeData
 {
     int Min;
