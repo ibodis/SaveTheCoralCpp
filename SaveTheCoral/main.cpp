@@ -22,7 +22,7 @@ const int windowWidth = 2000;
 const int windowHeight = 1200;
 
 // Screen areas
-sf::Rect<float> menuRect(0, 0, windowWidth, 150);
+sf::Rect<float> menuRect(0, 0, windowWidth, 180);
 sf::Rect<float> reefRect(0, menuRect.height, windowWidth, windowHeight - menuRect.height);
 
 // Window
@@ -47,8 +47,17 @@ sf::RectangleShape coral;
 float shapeOutlineThickness = 1;
 sf::Color shapeOutlineColor(100, 100, 200);
 
-typedef struct MoleculeData
+// Font and text color
+sf::Font font;
+sf::Color textColor(sf::Color::Black);
+
+// Text elements
+sf::Text textMenuTitle;
+sf::Text textMenuCarbonDioxide;
+
+typedef struct VariableData
 {
+    sf::String Name;
     int Min;
     int Max;
     int Count;
@@ -57,7 +66,7 @@ typedef struct MoleculeData
     float Size;
     int Speed;
 
-    MoleculeData()
+    VariableData()
     {
         Min = 0;
         Max = 0;
@@ -67,8 +76,9 @@ typedef struct MoleculeData
         Speed = 0;
     }
 
-    void Initialize(int min, int max, sf::Color color, float size, int speed)
+    void Initialize(const sf::String name, int min, int max, sf::Color color, float size, int speed)
     {
+        Name = name;
         Min = min;
         Max = max;
         Color = color;
@@ -117,19 +127,66 @@ typedef struct MoleculeData
     {
         return Max - Min;
     }
+
+    int DrawLegend(int x, int y)
+    {
+        int fontSize = 20;
+        sf::Text text;
+        text.setFont(font);
+        text.setFillColor(textColor);
+
+        wchar_t buffer[1000];
+        wsprintfW(buffer, L"%s (%d)", Name.toWideString().c_str(), Count);
+        text.setString(buffer);
+        text.setCharacterSize(fontSize);
+        text.setPosition(x, y);
+
+        window.draw(text);
+
+        int sliderOffset = 250;
+        int sliderRange = 200;
+        int margin = 3;
+
+        sf::RectangleShape bar;
+        bar.setFillColor(Color);
+        bar.setOutlineColor(sf::Color::Black);
+        bar.setOutlineThickness(1.0f);
+        bar.setSize(sf::Vector2f(sliderRange + (margin * 2), fontSize));
+        bar.setPosition(x + sliderOffset, y);
+        window.draw(bar);
+
+//        bar.setPosition(x + sliderOffset + sliderRange + (margin * 2), y);
+//        window.draw(bar);
+
+        bar.setSize(sf::Vector2f(3, fontSize));
+
+        bar.setFillColor(sf::Color::Green);
+        bar.setOutlineColor(sf::Color(50, 50, 50));
+        bar.setOutlineThickness(3);
+        int indicatorOffset = (int) ((float) sliderRange * ((float) (Count - Min) / (float) (Max - Min)));
+        bar.setPosition(x + sliderOffset + margin + indicatorOffset, y);
+        window.draw(bar);
+
+//         sf::CircleShape indicator;
+//         indicator.setPosition(x + sliderOffset + margin + indicatorOffset, y);
+//         indicator.setFillColor(Color);
+//         indicator.setRadius(Size);
+//         indicator.setOutlineThickness(shapeOutlineThickness);
+//         indicator.setOutlineColor(shapeOutlineColor);
+//         window.draw(indicator);
+
+        return y + fontSize + 10;
+    }
 };
 
-MoleculeData carbonDioxide;
-MoleculeData carbonicAcid;
-MoleculeData carbonate;
-MoleculeData biCarbonate;
-MoleculeData calciumCarbonate;
+VariableData carbonDioxide;
+VariableData carbonicAcid;
+VariableData carbonate;
+VariableData biCarbonate;
+VariableData calciumCarbonate;
+VariableData phLevel;
+VariableData waterTemperature;
 
-// Menu text
-sf::Font font;
-sf::Color textColor(sf::Color::Black);
-sf::Text textMenuTitle;
-sf::Text textMenuCarbonDioxide;
 
 void AdjustCarbonDioxide(int amount)
 {
@@ -149,39 +206,44 @@ void AdjustCarbonDioxide(int amount)
 
     // As carbonate levels drop, there will be less carbonate to form calcium carbonate by the corals, therefore calcium carbonate levels also go down
     calciumCarbonate.Count = calciumCarbonate.Max - (int)((float)calciumCarbonate.GetRange() * polutionFactor);
+
+    phLevel.Count = phLevel.Max - (int)((float)phLevel.GetRange() * polutionFactor);
+
+    waterTemperature.Count = waterTemperature.Min + (int)((float)phLevel.GetRange() * polutionFactor);
 }
 
-void InitializeMenu()
+int SetText(sf::Text& text, int fontSize, int x, int y, const sf::String textString)
+{
+    text.setFont(font);
+    text.setFillColor(textColor);
+
+    text.setString(textString);
+    text.setCharacterSize(fontSize);
+    text.setPosition(x, y);
+
+    return y + fontSize + 10;
+}
+
+void InitializeText()
 {
     int xPos = 10;
     int yPos = 10;
-    int fontSize;
 
-    fontSize = 40;
-    textMenuTitle.setFont(font);
-    textMenuTitle.setString("Welcome to Save the Coral Simulation");
-    textMenuTitle.setCharacterSize(fontSize);
-    textMenuTitle.setFillColor(textColor);
-    textMenuTitle.setPosition(xPos, yPos);
-    yPos += fontSize + 10;
-
-    fontSize = 20;
-    textMenuCarbonDioxide.setFont(font);
-    textMenuCarbonDioxide.setCharacterSize(fontSize);
-    textMenuCarbonDioxide.setFillColor(textColor);
-    textMenuCarbonDioxide.setPosition(xPos, yPos);
-    yPos += fontSize + 10;
+    yPos = SetText(textMenuTitle, 40, xPos, yPos, "Welcome to Save the Coral Simulation");
+    yPos = SetText(textMenuCarbonDioxide, 20, xPos, yPos, "");
 }
 
 void Initialize()
 {
     std::srand(GetTickCount());
 
-    carbonDioxide.Initialize(280, 600, sf::Color::Red, 4, 6);
-    carbonicAcid.Initialize(100, 500, sf::Color(255, 165, 0), 6.5, 4);
-    carbonate.Initialize(20, 300, sf::Color(255, 160, 122), 4, 6);
-    biCarbonate.Initialize(10, 200, sf::Color(25, 25, 112), 6, 4);
-    calciumCarbonate.Initialize(10, 200, sf::Color(255, 248, 220), 10, 2);
+    carbonDioxide.Initialize("Carbon Dioxide", 100, 600, sf::Color::Red, 4, 6);
+    carbonicAcid.Initialize("Carbonic Acid", 100, 500, sf::Color(255, 165, 0), 6.5, 4);
+    carbonate.Initialize("Carbonate", 20, 300, sf::Color(255, 160, 122), 4, 6);
+    biCarbonate.Initialize("Bi-Carbonate", 10, 200, sf::Color(25, 25, 112), 6, 4);
+    calciumCarbonate.Initialize("Calcium Carbonate", 10, 200, sf::Color(255, 248, 220), 10, 2);
+    phLevel.Initialize("pH Level", 0, 10, sf::Color(80, 248, 100), 10, 2);
+    waterTemperature.Initialize("Water temperature", 0, 10, sf::Color(150, 150, 250), 10, 2);
 
     AdjustCarbonDioxide(0);
 
@@ -215,7 +277,7 @@ void Initialize()
     reefSprite.setScale(sf::Vector2f((float)reefRect.width / (float)reefSize.x, (float)reefRect.height / (float)reefSize.y));
     reefSprite.setColor(sf::Color::Black);
 
-    // Create greyscale shader
+    // Create grey scale shader
     const std::string fragmentShader = \
         "uniform sampler2D texture;" \
         "uniform float greyScale;" \
@@ -237,15 +299,14 @@ void Initialize()
     reefShader.setUniform("texture", sf::Shader::CurrentTexture);
 
     // Create text objects
-    InitializeMenu();
+    InitializeText();
 }
 
 void UpdateText()
 {
     wchar_t buffer[1000];
 
-    wsprintfW(buffer, L"Carbon Dioxide control: [a] increase, [s] decrease  [Min: %d ppm, Current: %d ppm, Max: %d ppm]", 
-        carbonDioxide.Min, carbonDioxide.Count, carbonDioxide.Max);
+    wsprintfW(buffer, L"Carbon Dioxide control: [a] increase, [s] decrease (%d)", carbonDioxide.Count);
     textMenuCarbonDioxide.setString(buffer);
 }
 
@@ -269,6 +330,16 @@ void DrawWindow()
     // Draw the text
     window.draw(textMenuTitle);
     window.draw(textMenuCarbonDioxide);
+
+    int x = 1200;
+    int y = 10;
+    y = carbonDioxide.DrawLegend(x, y);
+    y = carbonicAcid.DrawLegend(x, y);
+    y = biCarbonate.DrawLegend(x, y);
+    y = carbonate.DrawLegend(x, y);
+    y = calciumCarbonate.DrawLegend(x, y);
+    y = phLevel.DrawLegend(x, y);
+    y = waterTemperature.DrawLegend(x, y);
 
     // Display things on screen
     window.display();
